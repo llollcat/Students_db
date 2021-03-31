@@ -1,8 +1,0 @@
-//
-// Created by tiramisu on 30.03.2021.
-//
-
-#ifndef UNTITLED_INPUTMANAGER_H
-#define UNTITLED_INPUTMANAGER_H
-
-#endif //UNTITLED_INPUTMANAGER_H

@@ -2,10 +2,10 @@
 #define UNTITLED_HUMAN_H
 
 #include "string"
-#include "ERROR_CODES.h"
+#include "../ERROR_CODES.h"
 #include "Date.h"
-
-class Human {
+#include "../IO/DataKeeper.h"
+class Human{
 
 protected:
     Date day_of_birth;
