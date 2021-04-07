@@ -5,7 +5,6 @@
 #ifndef UNTITLED_IOMANAGER_H
 #define UNTITLED_IOMANAGER_H
 
-
 class IOManager{
 
 

@@ -7,12 +7,13 @@
 
 #include "../DataKeeper.h"
 
+class DataKeeper;
 class Savable {
 
 public:
     virtual const DataKeeper save(const DataKeeper &data_keeper) = 0;
 
-    virtual const DataKeeper load>>(const DataKeeper &data_keeper) = 0;
+    virtual const DataKeeper load(const DataKeeper &data_keeper) = 0;
 
 
 };

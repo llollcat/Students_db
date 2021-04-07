@@ -2,8 +2,6 @@
 #define UNTITLED_DATE_H
 
 
-#include "../ERROR_CODES.h"
-
 class Date final {
 private:
     bool is_setted = false;
@@ -25,10 +23,33 @@ private:
 
 public:
 
+    std::string getStringDate() {
+        std::string out;
+
+        for (int i =0; i<2-std::to_string(day).length(); ++i)
+            out += '0';
+        out+= std::to_string(this->day);
+        out+='.';
+
+        for (int i =0; i<2-std::to_string(this->month).length(); ++i)
+            out += '0';
+        out+= std::to_string(this->month);
+        out+='.';
+
+
+        for (int i =0; i<4-std::to_string(this->year).length(); ++i)
+            out += '0';
+        out+= std::to_string(this->year);
+
+        return out;
+    }
+
+
+
     ERROR_CODES setDate(int32_t day, int32_t month, int32_t year) {
     #define set_values this->day=day;this->month = month;this->year = year; this->is_setted = true;return OK;
 
-        if (year<0)
+        if ((year<0) || (year / 10'000 != 0))
             return YEAR_ERROR;
         if ((month<1)||(month>12))
             return MONTH_ERROR;

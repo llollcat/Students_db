@@ -2,9 +2,8 @@
 #define UNTITLED_HUMAN_H
 
 #include "string"
-#include "../ERROR_CODES.h"
-#include "Date.h"
-#include "../IO/DataKeeper.h"
+
+
 class Human{
 
 protected:
@@ -34,8 +33,10 @@ public:
         return OK;
     }
 
-    virtual bool isMale() const final{
-        return this->is_male;
+    virtual std::string getIsMale() const final{
+        if (this->is_male)
+            return "Male";
+        return "Female";
     }
     virtual ERROR_CODES setIsMale(bool isMale) final {
         this->is_male = isMale;
