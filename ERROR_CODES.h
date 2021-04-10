@@ -6,14 +6,15 @@
 #define UNTITLED_ERROR_CODES_H
 
 enum ERROR_CODES {
-    DAY_ERROR = INT32_MIN,
+    OK = 0,
+    DAY_ERROR,
     MONTH_ERROR,
     YEAR_ERROR,
     NOTHING_FIND,
     ALREADY_EXIST,
     REQUEST_ERROR,
     NOT_SETTED,
-    OK = 0
+    FILE_ERROR
 
 };
 

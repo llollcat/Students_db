@@ -2,14 +2,14 @@
 // Created by tiramisu on 30.03.2021.
 //
 
-#ifndef UNTITLED_STUDENTSMANAGER_H
-#define UNTITLED_STUDENTSMANAGER_H
+#ifndef UNTITLED_STUDENTSCONTAINER_H
+#define UNTITLED_STUDENTSCONTAINER_H
 
 #include "vector"
 
 class Student;
 
-class StudentsManager {
+class StudentsContainer : Savable {
 private:
     int32_t student_counter = 0;
 
@@ -24,7 +24,7 @@ private:
             ++start;
 
 
-        #define find_start_and_end_value(len) { bool is_met_equal_char = false; \
+#define find_start_and_end_value(len) { bool is_met_equal_char = false; \
             start += len-1;\
             while ((start < expression.length()) && ((expression[start+1] == ' ') || (!is_met_equal_char))) {\
                 if (expression[start+1]=='=') {\
@@ -36,7 +36,7 @@ private:
             while ((end < expression.size()-1)&& expression[end+1] !=' ') ++end; }
 
 
-        #define do_iteration_and_return(condition)   {              for (const auto &item : students_vector) { \
+#define do_iteration_and_return(condition)   {              for (const auto &item : students_vector) { \
             if (condition) \
                 out->push_back(item); \
         } \
@@ -103,7 +103,7 @@ public:
     typedef std::vector<int32_t> students_ids;
 
 
-    vector_in_dynamic_memory FindStudents(const std::string &request) {
+    StudentsContainer* FindStudents(const std::string &request){
         /* Использование
          * 1) Ф.И.О. студента. -          FIO     = str;
          * 2) Число, месяц, год рождения. DOB     = DD.MM.YYYY;
@@ -116,9 +116,9 @@ public:
 
 
 
-        return this->expression_analyzer(request, this->students);
-
-
+        StudentsContainer *out = new StudentsContainer();
+        out->students = this->expression_analyzer(request, this->students);
+        return out;
     }
 
 
@@ -147,19 +147,31 @@ public:
     };
 
 
+public:
+    // принимает имя файла, где в конце будет поставлен номер студента
+    void save(std::string filename) override {
+        for (int i = 0; i < students.size(); ++i)
+            students[i]->save(filename + std::to_string(i));
 
+    };
 
+    // принимает имя файла, где в конце будет поставлен номер студента
+    ERROR_CODES load(std::string filename, bool is_need_return_error = false) override {
+        ERROR_CODES error = OK;
+        for (int i = 0; error == OK; ++i) {
+            auto *student = new Student();
+            error = student->load(filename + std::to_string(i), true);
+            if (error == OK)
+                this->NewStudent(student);
+        }
+    }
 
+public:
 
+    friend std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager);
 
-
-
-
-
-
-
-    ~StudentsManager() {
-        for (const auto &item : this->students) {
+    ~StudentsContainer() {
+        for (auto &item : this->students) {
             delete item;
         }
 
@@ -168,4 +180,16 @@ public:
 
 };
 
-#endif //UNTITLED_STUDENTSMANAGER_H
+
+std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager) {
+
+    for (auto &item: studentsManager.students) {
+        out << *item;
+    }
+
+
+    return out;
+}
+
+
+#endif //UNTITLED_STUDENTSCONTAINER_H

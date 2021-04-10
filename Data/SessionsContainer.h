@@ -9,7 +9,7 @@
 #include "vector"
 
 class SessionsContainer {
-
+//TODO Доделать стеры, чтобы данные проверяли
 private:
 
     std::vector<std::map<std::string, int>> sessions;
@@ -25,8 +25,16 @@ public:
 
     }
 
+    std::vector<std::map<std::string, int>> getVectorOfSessions() {
+            return this->sessions;
 
-    int getSubjectGrade(const int &session_number, const std::string &subject) {
+    };
+
+
+
+
+    int getSubjectGrade(int session_number, const std::string &subject) {
+        --session_number;
         auto temp = this->sessions[session_number].find(subject);
         if (temp != this->sessions[session_number].end())
             return this->sessions[session_number].find(subject)->second;
@@ -35,7 +43,8 @@ public:
 
     }
 
-    ERROR_CODES deleteSession(const int &session_number, const std::string &subject) {
+    ERROR_CODES deleteSession(int session_number, const std::string &subject) {
+        --session_number;
         auto temp = this->sessions[session_number].find(subject);
         if (temp != this->sessions[session_number].end()) {
             this->sessions[session_number].erase(subject);
@@ -46,7 +55,8 @@ public:
 
     }
 
-    ERROR_CODES editSession(const int &session_number, const std::string &subject, int new_grade) {
+    ERROR_CODES editSession(int session_number, const std::string &subject, int new_grade) {
+        --session_number;
         auto temp = this->sessions[session_number].find(subject);
         if (temp != this->sessions[session_number].end()) {
             temp->second = new_grade;
@@ -58,7 +68,8 @@ public:
 
     }
 
-    ERROR_CODES addSession(const int &session_number, const std::string subject, int grade) {
+    ERROR_CODES addSession(int session_number, const std::string subject, int grade) {
+        --session_number;
         if (this->sessions[session_number].find(subject) == this->sessions[session_number].end()) {
             this->sessions[session_number].insert(this->sessions[session_number].end(),
                                                   std::pair<std::string, int>(subject, grade));

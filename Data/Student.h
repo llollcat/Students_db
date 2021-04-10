@@ -8,27 +8,25 @@
 #include "vector"
 #include "../IO/AbstactClasses/Savable.h"
 
-class StudentsManager;
+class StudentsContainer;
 
 
 class Student final : public Human, public Savable {
 protected:
 
 
-    friend StudentsManager;
+    friend StudentsContainer;
     int32_t year_of_entering;
     std::string faculty;
     std::string group;
     std::string record_book_number;
     int32_t id;
-    SessionsContainer sessions;
 public:
-    SessionsContainer &getSessions()  {
-        return this->sessions;
-    }
+    SessionsContainer sessions;
 
 
-    friend StudentsManager;
+    friend StudentsContainer;
+
     [[nodiscard]] virtual std::string getYearOfEntering() const final {
         return std::to_string(this->year_of_entering);
     }
@@ -68,11 +66,13 @@ public:
     }
 
 
-    Student() = delete;
+    explicit Student() : Human() {
+        this->sessions = SessionsContainer();
+    };
 
     explicit Student(int32_t year_of_entering, std::string faculty, std::string group, std::string record_book_number,
-                     int32_t day, int32_t month, int32_t year, const std::string& full_name, bool is_male) :
-                     Human(day, month, year,  full_name,is_male) {
+                     int32_t day, int32_t month, int32_t year, const std::string &full_name, bool is_male) :
+            Human(day, month, year, full_name, is_male) {
         this->year_of_entering = year_of_entering;
         this->faculty = std::move(faculty);
         this->group = std::move(group);
@@ -95,21 +95,114 @@ public:
     }
 
 
+    void save(std::string filename) override {
+
+        std::ofstream file(filename);
+
+        if (!file) {
+            // то выводим сообщение об ошибке и выполняем функцию exit()
+            std::cerr << "Не возможно открыть файл \"" << filename << "\"" << std::endl;
+            exit(FILE_ERROR);
+        }
 
 
-    virtual  const DataKeeper save(const DataKeeper &data_keeper) {};
-
-    virtual const DataKeeper load(const DataKeeper &data_keeper) {};
-
-
+        file << full_name << std::endl <<year_of_entering <<std::endl << faculty << std::endl << group << std::endl << record_book_number << std::endl;
+        file << id << std::endl  << is_male << std::endl;
+        file << day_of_birth.day << std::endl << day_of_birth.month << std::endl << day_of_birth.year << std::endl;
 
 
+        for (const auto &item: sessions.getVectorOfSessions()) {
+            file << '_' << std::endl;
+            for (const auto &item1: item) {
+                file << item1.first << std::endl;
+                file << item1.second << std::endl;
+            }
+        }
+
+        file.close();
+
+    };
 
 
+    ERROR_CODES load(std::string filename, bool is_need_return_error = false) override {
+        std::ifstream in_file(filename);
+        if (!in_file) {
+            if (is_need_return_error)
+                return FILE_ERROR;
+            std::cerr << "Файл \"" << filename << "\" Не может быть найден" << std::endl;
+            exit(FILE_ERROR);
+        }
+
+        getline(in_file, full_name);
+        in_file >> year_of_entering >> faculty >> group >> record_book_number >> id;
+        in_file >> is_male;
+
+        in_file >> day_of_birth.day >> day_of_birth.month >> day_of_birth.year;
+
+
+
+        int counter = 0;
+        bool is_set_second = false;
+        std::string temp;
+        while (in_file) {
+            std::string strInput;
+            in_file >> strInput;
+            if (strInput == "_") {
+                ++counter;
+                is_set_second = false;
+                continue;
+            }
+            if (!is_set_second) {
+                temp = strInput;
+                is_set_second = true;
+                continue;
+            }
+            // if is set second
+            sessions.addSession(counter, temp, std::stoi(strInput));
+            is_set_second = false;
+
+
+        }
+        in_file.close();
+        return OK;
+    };
+
+
+    friend std::ostream &operator<<(std::ostream &out, Student &student);
 
 
 };
 
+std::ostream &operator<<(std::ostream &out, Student &student) {
+#define sep "; "
+    out << "ФИО: " << student.full_name << sep << "Факультет: " << student.faculty << sep;
+    out << "Группа: " << student.group << sep << "Номер зачётной книжки: " << student.record_book_number << sep;
+    out << "Год поступления: " << student.year_of_entering << sep << "Пол: " << student.getIsMale() << sep;
+    out << "Дата рождения: " << student.day_of_birth.getStringDate() << sep;
+
+    out << std::endl << "Сессии:" << std::endl;
+    bool number_of_session_was_outed = false;
+    int counter = 1;
+    bool is_worked = false;
+    for (const auto &item: student.sessions.getVectorOfSessions()) {
+        for (const auto &item1: item) {
+            is_worked = true;
+            if (!number_of_session_was_outed) {
+                out << counter << " семестр:" << std::endl;
+                number_of_session_was_outed = true;
+            }
+            out << "   " << item1.first << ": " << item1.second << std::endl;
+        }
+        ++counter;
+    }
+    if (!is_worked) {
+        std::cout << "   Нет данных.";
+
+    }
+    out << std::endl;
+
+    return out;
+}
 
 
 #endif

@@ -2,12 +2,14 @@
 #define UNTITLED_DATE_H
 
 
+class Student;
+
 class Date final {
 private:
     bool is_setted = false;
-    int32_t day{};
-    int32_t month{};
-    int32_t year{};
+    int day{};
+    int month{};
+    int year{};
 
 
     bool is_leap_year(int32_t year) const {
@@ -22,6 +24,7 @@ private:
 
 
 public:
+    friend Student;
 
     std::string getStringDate() {
         std::string out;
