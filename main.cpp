@@ -3,8 +3,9 @@
 #include "Includes.h"
 #include "cryptopp/modes.h"
 #include "map"
-# include <locale>
 # include <codecvt>
+
+
 
 #define new_pair(str, SC) std::pair<std::string, StudentsContainer *>(str, SC)
 std::map<std::string, StudentsContainer *> containers;
@@ -24,17 +25,6 @@ int main() {
     mainStudentContainer.load(path);
 
 
-/*    mainStudentContainer.NewStudent(new Student(2019, "Информатика", "БИБА-20-21",
-                                           "БОБА06А", 1, 12, 2001, "Клинков Клин Клинычъ", true));
-    mainStudentContainer.NewStudent(new Student(2020, "Кулинария", "БОКА-22-33",
-                                           "ГБП007Ж", 11, 1, 2002, "Килькова Килька Киличовна", false));
-
-    mainStudentContainer.students[0]->sessions.addSession(9, "Физкультура", 3);*/
-
-
-
-
-
     std::cout << "help для вывода списка команд.\n";
     bool is_need_exit = false;
     while (!is_need_exit) {
@@ -43,11 +33,12 @@ int main() {
 
         if (command == "help") {
             std::cout << "Использование:\n"
-                         "  Новый список       newL\n"
+                         "  Новый список                     newL\n"
                          "  Удалить список                   delL\n"
                          "  Добавить студента                addS\n"
                          "  Удалить студента                 delS\n"
                          "  Отфильтровать список студентов   findS\n"
+                         "  Отредактировать запись           editS\n"
                          "  Вывести список                   print\n"
                          "  Завершить программу              quit\n";
 
@@ -57,7 +48,7 @@ int main() {
             check(command);
 
 
-            StudentsContainer *sc = new StudentsContainer(mainStudentContainer);
+            auto *sc = new StudentsContainer(mainStudentContainer);
 
 
             if (containers.find(command) == containers.end()) {
@@ -84,7 +75,7 @@ int main() {
             if (mainStudentContainer.DeleteStudent(std::stoi(command)) == OK) {
                 std::cout << "Удалено\n";
             } else {
-                std::cout << "Ошибка/n";
+                std::cout << "Ошибка\n";
             }
 
         } else if (command == "addS") {
@@ -114,14 +105,11 @@ int main() {
                 continue;
             }
 
-            bool is_error = true;
             get_val("Пол", command);
             if (command == "Муж.") {
                 sex = true;
-                is_error = false;
             } else if (command == "Жен.") {
                 sex = false;
-                is_error = false;
             } else {
                 std::cout << "Не коректный ввод";
                 continue;
@@ -138,6 +126,7 @@ int main() {
             SessionsContainer sessionsContainer = SessionsContainer();
 
             std::cout << "Для остановки добавления введите пустую строчку" << std::endl;
+
             for (;;) {
                 get_val("Введите номер сессии", command);
 
@@ -220,14 +209,11 @@ int main() {
                 errorCode = mainStudentContainer.students[num]->setRecordBookNumber(command);
             } else if (command == "Sex") {
                 bool sex;
-                bool is_error = true;
                 get_val("Введите новый параметр\n", command);
                 if (command == "Муж.") {
                     sex = true;
-                    is_error = false;
                 } else if (command == "Жен.") {
                     sex = false;
-                    is_error = false;
                 } else {
                     std::cout << "Не коректный ввод";
                     continue;
@@ -292,49 +278,36 @@ int main() {
             std::cout << "Выполнено\n";
 
 
-
         } else if (command == "findS") {
 
 
             std::cout << "Введите название листа\n";
-            getline(std::cin, command
-            );
+            getline(std::cin, command);
+            if (containers.find(command) == containers.end()) {
+                std::cout << "Такого списка нет.\n";
+                continue;
+            }
 
             std::string req;
             std::cout << "Введите запрос\n";
-            getline(std::cin, req
-            );
+            getline(std::cin, req);
 
-            containers.
-                            find(command)
-                    ->second->
-                            FindStudents(req);
+            containers.find(command)->second->FindStudents(req);
 
 
         } else if (command == "print") {
             std::cout << "Введите название списка\n";
             std::cout << "Для вывода всех студентов введите пустую строку.\n";
-            getline(std::cin, command
-            );
-            if (command.
-
-                    empty()
-
-                    ) {
-                std::cout <<
-                          mainStudentContainer;
+            getline(std::cin, command);
+            if (command.empty()) {
+                std::cout <<mainStudentContainer;
             } else {
                 auto find = containers.find(command);
-                if (find == containers.
-
-                        end()
-
-                        ) {
+                if (find == containers.end()) {
                     std::cout << "Такого списка нет.";
                 } else {
                     StudentsContainer sc = *find->second;
-                    std::cout <<
-                              sc;
+                    std::cout <<sc;
                 }
             }
 
@@ -345,27 +318,11 @@ int main() {
             std::cout << "Команда не найдена.\n";
         }
 
-        std::cout <<
-                  std::endl;
-
-
-
-
-/*
-        "      Ф.И.О. студента.            FIO     = str;\n"
-        "      Число, месяц, год рождения. DOB     = DD.MM.YYYY;\n"
-        "      Год поступления в институт. YFE     = YYYY;\n"
-        "      Факультет, кафедра.         Faculty = str;\n"
-        "      Группа.                     Group   = str;\n"
-        "      Номер зачетной книжки.      RBN     = str;\n"
-        "      Пол                         Sex     = Муж. ИЛИ Жен.;"*/
-
-
+        std::cout << std::endl;
     }
 
 
-    mainStudentContainer.
-            save(path);
+    mainStudentContainer.save(path);
 
 
     return 0;

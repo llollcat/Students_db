@@ -18,11 +18,11 @@ protected:
 
 
     friend StudentsContainer;
-    int32_t year_of_entering;
+    int year_of_entering;
     std::string faculty;
     std::string group;
     std::string record_book_number;
-    int32_t id;
+    int id;
 public:
     SessionsContainer sessions;
 
@@ -34,7 +34,7 @@ public:
         return std::to_string(this->year_of_entering);
     }
 
-    virtual ERROR_CODES setYearOfEntering(int32_t year_of_entering) final {
+    virtual ERROR_CODES setYearOfEntering(int year_of_entering) final {
         if (year_of_entering < 0)
             return YEAR_ERROR;
         this->year_of_entering = year_of_entering;
@@ -73,8 +73,8 @@ public:
         this->sessions = SessionsContainer();
     };
 
-    explicit Student(int32_t year_of_entering, std::string faculty, std::string group, std::string record_book_number,
-                     int32_t day, int32_t month, int32_t year, const std::string &full_name, bool is_male) :
+    explicit Student(int year_of_entering, std::string faculty, std::string group, std::string record_book_number,
+                     int day, int month, int year, const std::string &full_name, bool is_male) :
             Human(day, month, year, full_name, is_male) {
         this->year_of_entering = year_of_entering;
         this->faculty = std::move(faculty);
@@ -85,7 +85,7 @@ public:
 
     }
 
-    explicit Student(int32_t year_of_entering, std::string faculty, std::string group, std::string record_book_number,
+    explicit Student(int year_of_entering, std::string faculty, std::string group, std::string record_book_number,
                      const Date &date, const std::string &full_name, bool is_male, SessionsContainer sessionsContainer) :
             Human(date, full_name, is_male) {
         this->year_of_entering = year_of_entering;

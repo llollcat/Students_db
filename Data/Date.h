@@ -12,7 +12,7 @@ private:
     int year{};
 
 
-    bool is_leap_year(int32_t year) const {
+    bool is_leap_year(int year) const {
         if (year % 400 == 0)
             return true;
         if (year % 100 == 0)
@@ -49,7 +49,7 @@ public:
 
 
 
-    ERROR_CODES setDate(int32_t day, int32_t month, int32_t year) {
+    ERROR_CODES setDate(int day, int month, int year) {
     #define set_values this->day=day;this->month = month;this->year = year; this->is_setted = true;return OK;
 
         if ((year<0) || (year / 10'000 != 0))
@@ -94,10 +94,6 @@ public:
                 }
                 break;
             case 7:
-                if ((1<=day) && (day<=31)) {
-                    set_values
-                }
-                break;
             case 8:
                 if ((1<=day) && (day<=31)) {
                     set_values
@@ -134,19 +130,19 @@ public:
 
     }
 
-    int32_t getDay() const {
+    int getDay() const {
         if (!this->is_setted)
             return NOT_SETTED;
         return day;
     }
 
-    int32_t getMonth() const {
+    int getMonth() const {
         if (!this->is_setted)
             return NOT_SETTED;
         return month;
     }
 
-    int32_t getYear() const {
+    int getYear() const {
         if (!this->is_setted)
             return NOT_SETTED;
         return year;
@@ -189,7 +185,7 @@ public:
 
     };
 
-    explicit Date(int32_t day, int32_t month, int32_t year){
+    explicit Date(int day, int month, int year){
         this->setDate(day,month,year);
     };
 };

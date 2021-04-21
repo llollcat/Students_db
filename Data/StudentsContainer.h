@@ -14,10 +14,17 @@ protected:
 
 
     std::vector<Student *> expression_analyzer(std::string expression, const std::vector<Student *> &students_vector) {
+        bool is_not = false;
+        if (expression.substr(0, 1) == "!") {
+            is_not = true;
+        }
+        expression = expression.substr(1, expression.size());
+
         int start = 0, end = 0;
         std::vector<Student *> *out = new std::vector<Student *>;
         while (expression[start] == ' ')
             ++start;
+
 
 
 #define find_start_and_end_value(len) { bool is_met_equal_char = false; \
@@ -33,7 +40,11 @@ protected:
 
 
 #define do_iteration_and_return(condition)   {              for (const auto &item : students_vector) { \
-            if ((condition)&& (item->id !=-1)) \
+            if ((is_not) &&(!(condition))&& (item->id !=-1))    {                                                                            \
+                        out->push_back(item);                                                                               \
+                            }                                                                           \
+            \
+            else if ((!is_not)&&(condition)&& (item->id !=-1)) \
                 out->push_back(item); \
         } \
         return *out;}
@@ -71,17 +82,46 @@ protected:
 
             }
         }
+        if ((expression.length() > 4) && (expression.substr(start, 4) == "SNum")) {
+            find_start_and_end_value(4);
+            int snum;
+            try {
+                snum = std::stoi(expression.substr(start, end - start + 1));
+            } catch (std::invalid_argument) {
+                std::cout << "Не правильный формат ввода \n";
+                return *out;
+            }
+            std::cout << "Введите название предмета\n";
+            std::string subj;
+            std::cin >> subj;
+
+            std::cout << "Введите оценку\n";
+            std::string temp;
+            std::cin >> temp;
+            int grade;
+            try {
+                grade = std::stoi(temp);
+            } catch (std::invalid_argument) {
+                std::cout << "Не правильный формат ввода \n";
+                return *out;
+            }
+
+            do_iteration_and_return(item->sessions.getVectorOfSessions()[snum - 1].find(subj)->second == grade);
+
+
+        }
         if ((expression.length() > 5) && (expression.substr(start, 5) == "Group")) {
             find_start_and_end_value(5);
-            do_iteration_and_return(item->group == (expression.substr(start, end - start + 1)));
+            do_iteration_and_return(item->group == (expression.substr(start, end - start + 1)))
 
         }
         if ((expression.length() > 7) && (expression.substr(start, 7) == "Faculty")) {
-            find_start_and_end_value(5);
+            find_start_and_end_value(7);
             do_iteration_and_return(item->faculty == (expression.substr(start, end - start + 1)))
+        } else {
+            std::cout << "Ошибка запроса\n";
+            return students_vector;
         }
-
-        return *out;
     }
 
 
@@ -110,7 +150,7 @@ public:
 
 
 private:
-    int getStudentId(const Student& student) {
+    int getStudentId(const Student &student) {
         return student.id;
     }
 
@@ -121,7 +161,7 @@ private:
 std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager) {
 
     for (auto &item: studentsManager.students) {
-        if (studentsManager.getStudentId(*item) !=-1)
+        if (studentsManager.getStudentId(*item) != -1)
             out << *item;
     }
 

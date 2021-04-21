@@ -9,7 +9,6 @@
 #include "vector"
 
 class SessionsContainer {
-//TODO Доделать стеры, чтобы данные проверяли
 private:
 
     std::vector<std::map<std::string, int>> sessions;
