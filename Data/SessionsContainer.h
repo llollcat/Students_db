@@ -57,6 +57,8 @@ public:
 
     ERROR_CODES editSession(int session_number, const std::string &subject, int new_grade) {
         --session_number;
+        if ((new_grade>5)||(new_grade<2))
+            return GRADE_ERROR;
         auto temp = this->sessions[session_number].find(subject);
         if (temp != this->sessions[session_number].end()) {
             temp->second = new_grade;

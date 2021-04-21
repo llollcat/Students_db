@@ -159,6 +159,36 @@ public:
 
     explicit Date(){};
 
+    ERROR_CODES setDate(std::string date){
+        int temp[3];
+        std::fill(std::begin(temp), std::end(temp), -1);
+
+        int counter = 0;
+        std::string temp1;
+
+        for (const auto &item : date) {
+            if (item == '.') {
+                temp[counter] = std::stoi(temp1);
+                ++counter;
+                temp1.clear();
+                continue;
+            }
+            temp1+=item;
+        }
+        temp[counter] = std::stoi(temp1);
+        bool error = false;
+
+        for (int i =0; i<3; ++i) {
+            if (temp[i]==-1) {
+                return  ERROR_CODES(DAY_ERROR+i);
+            }
+        }
+
+        return setDate(temp[0], temp[1], temp[2]);
+
+
+    };
+
     explicit Date(int32_t day, int32_t month, int32_t year){
         this->setDate(day,month,year);
     };

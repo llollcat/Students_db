@@ -6,9 +6,11 @@
 #include <utility>
 #include "string"
 #include "vector"
-#include "../IO/AbstactClasses/Savable.h"
+#include <fstream>
+#include "../AbstactClasses/Savable.h"
 
 class StudentsContainer;
+class MainStudentContainer;
 
 
 class Student final : public Human, public Savable {
@@ -26,6 +28,7 @@ public:
 
 
     friend StudentsContainer;
+    friend MainStudentContainer;
 
     [[nodiscard]] virtual std::string getYearOfEntering() const final {
         return std::to_string(this->year_of_entering);
@@ -83,22 +86,24 @@ public:
     }
 
     explicit Student(int32_t year_of_entering, std::string faculty, std::string group, std::string record_book_number,
-                     const Date &date, const std::string &full_name, bool is_male) :
+                     const Date &date, const std::string &full_name, bool is_male, SessionsContainer sessionsContainer) :
             Human(date, full_name, is_male) {
         this->year_of_entering = year_of_entering;
         this->faculty = std::move(faculty);
         this->group = std::move(group);
         this->record_book_number = std::move(record_book_number);
-        this->sessions = SessionsContainer();
+        this->sessions = std::move(sessionsContainer);
 
 
     }
 
 
-    void save(std::string filename) override {
+    ERROR_CODES save(std::string filename) override {
 
         std::ofstream file(filename);
-
+        if (this->id == -1){
+            return NOT_SAVED;
+        }
         if (!file) {
             // то выводим сообщение об ошибке и выполняем функцию exit()
             std::cerr << "Не возможно открыть файл \"" << filename << "\"" << std::endl;
@@ -120,6 +125,7 @@ public:
         }
 
         file.close();
+        return OK;
 
     };
 
@@ -157,7 +163,7 @@ public:
                 is_set_second = true;
                 continue;
             }
-            // if is set second
+
             sessions.addSession(counter, temp, std::stoi(strInput));
             is_set_second = false;
 
@@ -175,7 +181,7 @@ public:
 
 std::ostream &operator<<(std::ostream &out, Student &student) {
 #define sep "; "
-    out << "ФИО: " << student.full_name << sep << "Факультет: " << student.faculty << sep;
+    out <<"ID в основном списке: "<< student.id << sep <<  "ФИО: " << student.full_name << sep << "Факультет: " << student.faculty << sep;
     out << "Группа: " << student.group << sep << "Номер зачётной книжки: " << student.record_book_number << sep;
     out << "Год поступления: " << student.year_of_entering << sep << "Пол: " << student.getIsMale() << sep;
     out << "Дата рождения: " << student.day_of_birth.getStringDate() << sep;
@@ -193,6 +199,7 @@ std::ostream &operator<<(std::ostream &out, Student &student) {
             }
             out << "   " << item1.first << ": " << item1.second << std::endl;
         }
+        number_of_session_was_outed = false;
         ++counter;
     }
     if (!is_worked) {

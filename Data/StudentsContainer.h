@@ -9,15 +9,11 @@
 
 class Student;
 
-class StudentsContainer : Savable {
-private:
-    int32_t student_counter = 0;
+class StudentsContainer {
+protected:
 
 
-    typedef std::vector<Student *> &vector_in_dynamic_memory;
-
-    vector_in_dynamic_memory
-    expression_analyzer(std::string expression, const std::vector<Student *> &students_vector) {
+    std::vector<Student *> expression_analyzer(std::string expression, const std::vector<Student *> &students_vector) {
         int start = 0, end = 0;
         std::vector<Student *> *out = new std::vector<Student *>;
         while (expression[start] == ' ')
@@ -32,12 +28,12 @@ private:
                 }\
                 ++start; }                                                  \
             ++start;                                                                \
-            end =start; \
-            while ((end < expression.size()-1)&& expression[end+1] !=' ') ++end; }
+            end =expression.size()-1; \
+            while (expression[end] == ' ') --end; }
 
 
 #define do_iteration_and_return(condition)   {              for (const auto &item : students_vector) { \
-            if (condition) \
+            if ((condition)&& (item->id !=-1)) \
                 out->push_back(item); \
         } \
         return *out;}
@@ -92,91 +88,32 @@ private:
 public:
     std::vector<Student *> students;
 
-    ERROR_CODES NewStudent(Student *student) {
-        student->id = student_counter;
-        ++student_counter;
-        this->students.push_back(student);
-        return OK;
+
+    virtual void *FindStudents(const std::string &request) {
+
+
+        this->students = this->expression_analyzer(request, this->students);
     }
 
 
-    typedef std::vector<int32_t> students_ids;
+    // copy constructor
+    StudentsContainer(const StudentsContainer &sc) {
 
+        students = sc.students;
 
-    StudentsContainer* FindStudents(const std::string &request){
-        /* Использование
-         * 1) Ф.И.О. студента. -          FIO     = str;
-         * 2) Число, месяц, год рождения. DOB     = DD.MM.YYYY;
-         * 3) Год поступления в институт. YFE     = YYYY;
-         * 4) Факультет, кафедра.         Faculty = str;
-         * 5) Группа.                     Group   = str;
-         * 6) Номер зачетной книжки.      RBN     = str;
-         * 7) Пол                         Sex     = Male || Female;*/
-
-
-
-
-        StudentsContainer *out = new StudentsContainer();
-        out->students = this->expression_analyzer(request, this->students);
-        return out;
     }
 
-
-    ERROR_CODES DeleteStudent(std::vector<Student *> &vector) {
-        bool is_find = false;
-
-        auto iter_in_students = this->students.begin();
-        for (const auto &iter_in_vector : vector) {
-            while (iter_in_students != this->students.end()) {
-                if (*iter_in_students == iter_in_vector) {
-                    this->students.erase(iter_in_students);
-                    is_find = true;
-                    break;
-                } else
-                    ++iter_in_students;
-
-            }
-
-            if (!is_find)
-                return NOTHING_FIND;
-            return OK;
-
-        }
-
-
-    };
-
-
-public:
-    // принимает имя файла, где в конце будет поставлен номер студента
-    void save(std::string filename) override {
-        for (int i = 0; i < students.size(); ++i)
-            students[i]->save(filename + std::to_string(i));
-
-    };
-
-    // принимает имя файла, где в конце будет поставлен номер студента
-    ERROR_CODES load(std::string filename, bool is_need_return_error = false) override {
-        ERROR_CODES error = OK;
-        for (int i = 0; error == OK; ++i) {
-            auto *student = new Student();
-            error = student->load(filename + std::to_string(i), true);
-            if (error == OK)
-                this->NewStudent(student);
-        }
-    }
-
-public:
 
     friend std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager);
 
-    ~StudentsContainer() {
-        for (auto &item : this->students) {
-            delete item;
-        }
+    StudentsContainer() = default;
 
 
+private:
+    int getStudentId(const Student& student) {
+        return student.id;
     }
+
 
 };
 
@@ -184,9 +121,9 @@ public:
 std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager) {
 
     for (auto &item: studentsManager.students) {
-        out << *item;
+        if (studentsManager.getStudentId(*item) !=-1)
+            out << *item;
     }
-
 
     return out;
 }

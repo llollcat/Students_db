@@ -25,6 +25,14 @@ public:
         }
         return error;
     }
+    virtual ERROR_CODES setDayOfBirth(std::string date_str) final {
+        Date temp_day_of_birth = Date();
+        ERROR_CODES error = temp_day_of_birth.setDate(date_str);
+        if (error == OK) {
+            this->day_of_birth = temp_day_of_birth;
+        }
+        return error;
+    }
 
     virtual std::string getFullName() const final {
         return this->full_name;
