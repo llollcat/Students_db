@@ -1,5 +1,3 @@
-
-
 #ifndef UNTITLED_STUDENT_H
 #define UNTITLED_STUDENT_H
 
@@ -7,9 +5,10 @@
 #include "string"
 #include "vector"
 #include <fstream>
-#include "../AbstactClasses/Savable.h"
+#include "../Savable.h"
 
 class StudentsContainer;
+
 class MainStudentContainer;
 
 
@@ -18,11 +17,11 @@ protected:
 
 
     friend StudentsContainer;
-    int year_of_entering;
-    std::string faculty;
-    std::string group;
-    std::string record_book_number;
-    int id;
+    int _year_of_entering{};
+    std::string _faculty;
+    std::string _group;
+    std::string _record_book_number;
+    int _id{};
 public:
     SessionsContainer sessions;
 
@@ -31,40 +30,40 @@ public:
     friend MainStudentContainer;
 
     [[nodiscard]] virtual std::string getYearOfEntering() const final {
-        return std::to_string(this->year_of_entering);
+        return std::to_string(this->_year_of_entering);
     }
 
     virtual ERROR_CODES setYearOfEntering(int year_of_entering) final {
         if (year_of_entering < 0)
             return YEAR_ERROR;
-        this->year_of_entering = year_of_entering;
+        this->_year_of_entering = year_of_entering;
         return OK;
     }
 
     [[nodiscard]] virtual const std::string &getFaculty() const final {
-        return this->faculty;
+        return this->_faculty;
     }
 
     virtual ERROR_CODES setFaculty(const std::string &faculty) final {
-        this->Student::faculty = faculty;
+        this->Student::_faculty = faculty;
         return OK;
     }
 
     [[nodiscard]] virtual const std::string &getGroup() const final {
-        return this->group;
+        return this->_group;
     }
 
     virtual ERROR_CODES setGroup(const std::string &group) final {
-        this->Student::group = group;
+        this->Student::_group = group;
         return OK;
     }
 
     [[nodiscard]] virtual const std::string &getRecordBookNumber() const final {
-        return this->record_book_number;
+        return this->_record_book_number;
     }
 
     virtual ERROR_CODES setRecordBookNumber(const std::string &record_book_number) final {
-        this->record_book_number = record_book_number;
+        this->_record_book_number = record_book_number;
         return OK;
     }
 
@@ -76,22 +75,23 @@ public:
     explicit Student(int year_of_entering, std::string faculty, std::string group, std::string record_book_number,
                      int day, int month, int year, const std::string &full_name, bool is_male) :
             Human(day, month, year, full_name, is_male) {
-        this->year_of_entering = year_of_entering;
-        this->faculty = std::move(faculty);
-        this->group = std::move(group);
-        this->record_book_number = std::move(record_book_number);
+        this->_year_of_entering = year_of_entering;
+        this->_faculty = std::move(faculty);
+        this->_group = std::move(group);
+        this->_record_book_number = std::move(record_book_number);
         this->sessions = SessionsContainer();
 
 
     }
 
     explicit Student(int year_of_entering, std::string faculty, std::string group, std::string record_book_number,
-                     const Date &date, const std::string &full_name, bool is_male, SessionsContainer sessionsContainer) :
+                     const Date &date, const std::string &full_name, bool is_male, SessionsContainer sessionsContainer)
+            :
             Human(date, full_name, is_male) {
-        this->year_of_entering = year_of_entering;
-        this->faculty = std::move(faculty);
-        this->group = std::move(group);
-        this->record_book_number = std::move(record_book_number);
+        this->_year_of_entering = year_of_entering;
+        this->_faculty = std::move(faculty);
+        this->_group = std::move(group);
+        this->_record_book_number = std::move(record_book_number);
         this->sessions = std::move(sessionsContainer);
 
 
@@ -101,7 +101,7 @@ public:
     ERROR_CODES save(std::string filename) override {
 
         std::ofstream file(filename);
-        if (this->id == -1){
+        if (this->_id == -1) {
             return NOT_SAVED;
         }
         if (!file) {
@@ -111,9 +111,10 @@ public:
         }
 
 
-        file << full_name << std::endl <<year_of_entering <<std::endl << faculty << std::endl << group << std::endl << record_book_number << std::endl;
-        file << id << std::endl  << is_male << std::endl;
-        file << day_of_birth.day << std::endl << day_of_birth.month << std::endl << day_of_birth.year << std::endl;
+        file << full_name << std::endl << _year_of_entering << std::endl << _faculty << std::endl << _group << std::endl
+             << _record_book_number << std::endl;
+        file << _id << std::endl << is_male << std::endl;
+        file << day_of_birth._day << std::endl << day_of_birth._month << std::endl << day_of_birth._year << std::endl;
 
 
         for (const auto &item: sessions.getVectorOfSessions()) {
@@ -130,7 +131,7 @@ public:
     };
 
 
-    ERROR_CODES load(std::string filename, bool is_need_return_error = false) override {
+    ERROR_CODES load(std::string filename, bool is_need_return_error) override {
         std::ifstream in_file(filename);
         if (!in_file) {
             if (is_need_return_error)
@@ -140,11 +141,10 @@ public:
         }
 
         getline(in_file, full_name);
-        in_file >> year_of_entering >> faculty >> group >> record_book_number >> id;
+        in_file >> _year_of_entering >> _faculty >> _group >> _record_book_number >> _id;
         in_file >> is_male;
 
-        in_file >> day_of_birth.day >> day_of_birth.month >> day_of_birth.year;
-
+        in_file >> day_of_birth._day >> day_of_birth._month >> day_of_birth._year;
 
 
         int counter = 0;
@@ -178,12 +178,14 @@ public:
 
 
 };
+// добавление возможности вывода через std::cout<<
 
 std::ostream &operator<<(std::ostream &out, Student &student) {
 #define sep "; "
-    out <<"ID в основном списке: "<< student.id << sep <<  "ФИО: " << student.full_name << sep << "Факультет: " << student.faculty << sep;
-    out << "Группа: " << student.group << sep << "Номер зачётной книжки: " << student.record_book_number << sep;
-    out << "Год поступления: " << student.year_of_entering << sep << "Пол: " << student.getIsMale() << sep;
+    out << "ID в основном списке: " << student._id << sep << "ФИО: " << student.full_name << sep << "Факультет: "
+        << student._faculty << sep;
+    out << "Группа: " << student._group << sep << "Номер зачётной книжки: " << student._record_book_number << sep;
+    out << "Год поступления: " << student._year_of_entering << sep << "Пол: " << student.getIsMale() << sep;
     out << "Дата рождения: " << student.day_of_birth.getStringDate() << sep;
 
     out << std::endl << "Сессии:" << std::endl;

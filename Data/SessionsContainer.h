@@ -1,13 +1,10 @@
-//
-// Created by tiramisu on 06.04.2021.
-//
-
 #ifndef UNTITLED_SESSIONSCONTAINER_H
 #define UNTITLED_SESSIONSCONTAINER_H
 
 #include "map"
 #include "vector"
 
+// Контенер сессий
 class SessionsContainer {
 private:
 
@@ -25,22 +22,10 @@ public:
     }
 
     std::vector<std::map<std::string, int>> getVectorOfSessions() {
-            return this->sessions;
+        return this->sessions;
 
     };
 
-
-
-
-    int getSubjectGrade(int session_number, const std::string &subject) {
-        --session_number;
-        auto temp = this->sessions[session_number].find(subject);
-        if (temp != this->sessions[session_number].end())
-            return this->sessions[session_number].find(subject)->second;
-        else
-            return -1;
-
-    }
 
     ERROR_CODES deleteSession(int session_number, const std::string &subject) {
         --session_number;
@@ -56,7 +41,7 @@ public:
 
     ERROR_CODES editSession(int session_number, const std::string &subject, int new_grade) {
         --session_number;
-        if ((new_grade>5)||(new_grade<2))
+        if ((new_grade > 5) || (new_grade < 2))
             return GRADE_ERROR;
         auto temp = this->sessions[session_number].find(subject);
         if (temp != this->sessions[session_number].end()) {
@@ -69,7 +54,7 @@ public:
 
     }
 
-    ERROR_CODES addSession(int session_number, const std::string subject, int grade) {
+    ERROR_CODES addSession(int session_number, const std::string &subject, int grade) {
         --session_number;
         if (this->sessions[session_number].find(subject) == this->sessions[session_number].end()) {
             this->sessions[session_number].insert(this->sessions[session_number].end(),
@@ -84,4 +69,4 @@ public:
 };
 
 
-#endif //UNTITLED_SESSIONSCONTAINER_H
+#endif

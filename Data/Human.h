@@ -12,8 +12,11 @@ protected:
     bool is_male{};
 
 
+
+
+
 public:
-    virtual Date getDayOfBirth() const final {
+    [[nodiscard]] virtual Date getDayOfBirth() const final {
         return Date(this->day_of_birth);
     }
 
@@ -25,6 +28,7 @@ public:
         }
         return error;
     }
+
     virtual ERROR_CODES setDayOfBirth(std::string date_str) final {
         Date temp_day_of_birth = Date();
         ERROR_CODES error = temp_day_of_birth.setDate(date_str);
@@ -34,7 +38,7 @@ public:
         return error;
     }
 
-    virtual std::string getFullName() const final {
+    [[nodiscard]] virtual std::string getFullName() const final {
         return this->full_name;
     }
 
@@ -43,7 +47,7 @@ public:
         return OK;
     }
 
-    virtual std::string getIsMale() const final {
+    [[nodiscard]] virtual std::string getIsMale() const final {
         if (this->is_male)
             return "Муж.";
         return "Жен.";
@@ -55,23 +59,20 @@ public:
     }
 
 
-private:
+protected:
+    Human() {
+        this->day_of_birth = Date();
+    };
+
     Human(const std::string &full_name, bool is_male) {
         this->setFullName(full_name);
         this->setIsMale(is_male);
     }
 
-protected:
-    Human(){
-        this->day_of_birth = Date();
-    };
-
-
 public:
 
 
-    Human(int day, int month, int year, const std::string &full_name, bool is_male) : Human(full_name,
-                                                                                                        is_male) {
+    Human(int day, int month, int year, const std::string &full_name, bool is_male) : Human(full_name, is_male) {
         this->setDayOfBirth(day, month, year);
 
 
@@ -86,4 +87,4 @@ public:
 };
 
 
-#endif //UNTITLED_HUMAN_H
+#endif

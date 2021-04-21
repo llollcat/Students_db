@@ -1,25 +1,33 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
+
 #include <iostream>
 
-#include "Includes.h"
+#include "ERROR_CODES.h"
+#include "Data/SessionsContainer.h"
+#include "Data/Date.h"
+#include "Data/Human.h"
+#include "Data/Student.h"
+#include "Data/StudentsContainer.h"
+#include "Data/MainStudentContainer.h"
 #include "cryptopp/modes.h"
 #include "map"
-# include <codecvt>
-
 
 
 #define new_pair(str, SC) std::pair<std::string, StudentsContainer *>(str, SC)
-std::map<std::string, StudentsContainer *> containers;
 
-#define get_val(out, input_val)             std::cout << out << std::endl;             getline(std::cin, input_val); std::cout << std::endl;
+#define get_val(out, input_val)   std::cout << out << std::endl;   getline(std::cin, input_val); std::cout << std::endl
 
-#define check(input_val) if ((input_val.find("\n") !=-1) ||(input_val.find("_")!=-1) || (input_val.empty())) { std::cout << "Встречены запрещённые символы или пустая строка.\n"; continue;}
+#define check(input_val) if ((input_val.find('\n') !=-1) ||(input_val.find('_')!=-1) || (input_val.empty()))  \
+{ std::cout << "Встречены запрещённые символы или пустая строка.\n"; continue;}
+
 
 
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    std::string path = "student";
-
+    std::string path = "st";
+    std::map<std::string, StudentsContainer *> containers;
 
     MainStudentContainer mainStudentContainer = MainStudentContainer();
     mainStudentContainer.load(path);
@@ -45,10 +53,10 @@ int main() {
         } else if (command == "newL") {
             std::cout << "Введите назвение списка\n";
             getline(std::cin, command);
-            check(command);
+            check(command)
 
-
-            auto *sc = new StudentsContainer(mainStudentContainer);
+            // обрезка класса безопасна
+            auto *sc = new StudentsContainer(mainStudentContainer); // NOLINT(cppcoreguidelines-slicing)
 
 
             if (containers.find(command) == containers.end()) {
@@ -86,17 +94,17 @@ int main() {
             int yoe;
 
             get_val("ФИО", name);
-            check(name);
+            check(name)
             get_val("Факультет", faculty);
-            check(faculty);
+            check(faculty)
             get_val("Группа", group);
-            check(group);
+            check(group)
             get_val("Номер зачётной книжки", re_bo_num);
-            check(re_bo_num);
+            check(re_bo_num)
 
             get_val("Год поступления", command);
-            check(command);
-            if (command.find(".") != -1)
+            check(command)
+            if (command.find('.') != -1)
                 std::cout << "Не правильный формат ввода даты\n";
             try {
                 yoe = std::stoi(command);
@@ -117,7 +125,7 @@ int main() {
 
 
             get_val("Дата рождения", command);
-            check(command);
+            check(command)
             Date date = Date();
             if (date.setDate(command) != OK) {
                 std::cout << "Не правильный формат ввода даты\n";
@@ -133,7 +141,7 @@ int main() {
                 if (command.empty())
                     break;
                 int session_number;
-                if (command.find(".") != -1)
+                if (command.find('.') != -1)
                     std::cout << "Не правильный формат ввода номера\n";
                 try {
                     session_number = std::stoi(command);
@@ -146,12 +154,12 @@ int main() {
                 std::string subject, grade;
 
                 get_val("Введите название предмета", subject);
-                check(subject);
+                check(subject)
                 get_val("Введите оценку", grade);
-                check(grade);
+                check(grade)
 
                 int session_grade;
-                if (command.find(".") != -1)
+                if (command.find('.') != -1)
                     std::cout << "Не правильный формат ввода номера\n";
                 try {
                     session_grade = std::stoi(grade);
@@ -174,7 +182,7 @@ int main() {
         } else if (command == "editS") {
             ERROR_CODES errorCode = OK;
             get_val("Введите номер студента из основного списка.\n", command);
-            check(command);
+            check(command)
             int num;
             try {
                 num = std::stoi(command);
@@ -186,26 +194,26 @@ int main() {
                 std::cout << "Такого студента нет.\n";
                 continue;
             }
-            check(command);
+            check(command)
             get_val("Введите параметр.\n", command);
-            check(command);
+            check(command)
 
             if (command == "FIO") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setFullName(command);
             } else if (command == "DOB") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setDayOfBirth(command);
 
             } else if (command == "YFE") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setYearOfEntering(std::stoi(command));
             } else if (command == "RBN") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setRecordBookNumber(command);
             } else if (command == "Sex") {
                 bool sex;
@@ -221,19 +229,19 @@ int main() {
                 errorCode = mainStudentContainer.students[num]->setIsMale(sex);
             } else if (command == "Group") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setGroup(command);
             } else if (command == "Faculty") {
                 get_val("Введите новый параметр.\n", command);
-                check(command);
+                check(command)
                 errorCode = mainStudentContainer.students[num]->setFaculty(command);
 
 
             } else if (command == "Session") {
                 get_val("Введите номер сессии\n", command);
-                check(command);
+                check(command)
                 int session_num;
-                if (command.find(".") != -1)
+                if (command.find('.') != -1)
                     std::cout << "Не правильный формат ввода\n";
                 try {
                     session_num = std::stoi(command);
@@ -243,7 +251,7 @@ int main() {
                 }
                 std::string sub;
                 get_val("Введите название предмета\n", sub);
-                check(sub);
+                check(sub)
 
                 get_val("Введите новую оценку\n", command);
 
@@ -252,7 +260,7 @@ int main() {
 
                 } else {
                     int grade;
-                    if (command.find(".") != -1)
+                    if (command.find('.') != -1)
                         std::cout << "Не правильный формат ввода\n";
                     try {
                         grade = std::stoi(command);
@@ -300,14 +308,14 @@ int main() {
             std::cout << "Для вывода всех студентов введите пустую строку.\n";
             getline(std::cin, command);
             if (command.empty()) {
-                std::cout <<mainStudentContainer;
+                std::cout << mainStudentContainer;
             } else {
                 auto find = containers.find(command);
                 if (find == containers.end()) {
                     std::cout << "Такого списка нет.";
                 } else {
                     StudentsContainer sc = *find->second;
-                    std::cout <<sc;
+                    std::cout << sc;
                 }
             }
 
