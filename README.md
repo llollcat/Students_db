@@ -11,7 +11,7 @@
 Для сборки необходимо наличие **git** и **cmake**.
 
 # Установка
-В **консоли**
+В **терминале**
 ```sh
 git clone https://github.com/llollcat/Students_db
 cd Students_db/
