@@ -1,7 +1,11 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
 
+
 #include <iostream>
+
+std::string PASSWD;
+
 
 #include "ERROR_CODES.h"
 #include "Data/SessionsContainer.h"
@@ -10,7 +14,6 @@
 #include "Data/Student.h"
 #include "Data/StudentsContainer.h"
 #include "Data/MainStudentContainer.h"
-#include "cryptopp/modes.h"
 #include "map"
 
 
@@ -22,11 +25,16 @@
 { std::cout << "Встречены запрещённые символы или пустая строка.\n"; continue;}
 
 
-
 int main() {
     setlocale(LC_ALL, "Russian");
-
     std::string path = "st";
+
+
+
+
+    std::cout << "Введите пароль для шифрования." << std::endl;
+    std::getline(std::cin, PASSWD);
+
     std::map<std::string, StudentsContainer *> containers;
 
     MainStudentContainer mainStudentContainer = MainStudentContainer();
@@ -330,7 +338,7 @@ int main() {
     }
 
 
-    mainStudentContainer.save(path);
+      mainStudentContainer.save(path);
 
 
     return 0;

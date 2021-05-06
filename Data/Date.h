@@ -50,7 +50,7 @@ public:
 
 
     ERROR_CODES setDate(int day, int month, int year) {
-#define set_values this->_day=_day;this->_month = _month;this->_year = _year; this->is_setted = true;return OK;
+#define set_values this->_day= day;this->_month = month; this->_year = year; this->is_setted = true;return OK;
 
         if ((year < 0) || (year / 10'000 != 0))
             return YEAR_ERROR;

@@ -1,6 +1,8 @@
 #ifndef UNTITLED_STUDENT_H
 #define UNTITLED_STUDENT_H
 
+#include "../encrypt.h"
+#include "../decrypt.h"
 #include <utility>
 #include "string"
 #include "vector"
@@ -109,22 +111,24 @@ public:
             std::cerr << "Не возможно открыть файл \"" << filename << "\"" << std::endl;
             exit(FILE_ERROR);
         }
+        std::string data;
 
+        data += full_name + '\n' + std::to_string(_year_of_entering) + '\n' + _faculty + '\n' + _group + '\n';
+        data += _record_book_number + '\n';
+        data += std::to_string(_id) + '\n' + std::to_string(is_male) + '\n';
 
-        file << full_name << std::endl << _year_of_entering << std::endl << _faculty << std::endl << _group << std::endl
-             << _record_book_number << std::endl;
-        file << _id << std::endl << is_male << std::endl;
-        file << day_of_birth._day << std::endl << day_of_birth._month << std::endl << day_of_birth._year << std::endl;
-
+        data += std::to_string(day_of_birth._day) + '\n' + std::to_string(day_of_birth._month) + '\n' +
+                std::to_string(day_of_birth._year) + '\n';
 
         for (const auto &item: sessions.getVectorOfSessions()) {
-            file << '_' << std::endl;
+            data += '_'; data+= '\n';
             for (const auto &item1: item) {
-                file << item1.first << std::endl;
-                file << item1.second << std::endl;
+                data += item1.first + '\n';
+                data += std::to_string(item1.second) + '\n';
             }
         }
 
+        file << encrypt(data, PASSWD);
         file.close();
         return OK;
 
@@ -132,6 +136,7 @@ public:
 
 
     ERROR_CODES load(std::string filename, bool is_need_return_error) override {
+
         std::ifstream in_file(filename);
         if (!in_file) {
             if (is_need_return_error)
@@ -139,20 +144,49 @@ public:
             std::cerr << "Файл \"" << filename << "\" Не может быть найден" << std::endl;
             exit(FILE_ERROR);
         }
-
-        getline(in_file, full_name);
-        in_file >> _year_of_entering >> _faculty >> _group >> _record_book_number >> _id;
-        in_file >> is_male;
-
-        in_file >> day_of_birth._day >> day_of_birth._month >> day_of_birth._year;
+        std::string data;
+        in_file >> data;
+        data = decrypt(data, PASSWD);
 
 
-        int counter = 0;
+        int _pointer = -1;
+        auto getDataLine = [&_pointer, &data]() {
+            ++_pointer;
+            int counter = 0;
+            while ((data.size() > _pointer + counter) && (data[_pointer + counter] != '\n'))
+                ++counter;
+            _pointer += counter;
+            return data.substr(_pointer - counter, counter);
+        };
+        auto getData = [&_pointer, &data]() {
+            ++_pointer;
+            int counter = 0;
+            while ((data.size() > _pointer + counter) && (data[_pointer + counter] != '\n') && (data[_pointer] != ' '))
+                ++counter;
+            _pointer += counter;
+            return data.substr(_pointer - counter, counter);
+        };
+
+
+        full_name = getDataLine();
+        _year_of_entering = std::stoi(getData());
+        _faculty = getData();
+        _group = getData();
+        _record_book_number = getData();
+        _id = std::stoi(getData());
+        is_male = std::stoi(getData());
+
+       day_of_birth._day = std::stoi(getData());
+        day_of_birth._month = std::stoi(getData());
+        day_of_birth._year = std::stoi(getData());
+
+
+       int counter = 0;
         bool is_set_second = false;
         std::string temp;
-        while (in_file) {
+        while (_pointer<data.size()) {
             std::string strInput;
-            in_file >> strInput;
+            strInput = getData();
             if (strInput == "_") {
                 ++counter;
                 is_set_second = false;
@@ -169,6 +203,9 @@ public:
 
 
         }
+
+
+
         in_file.close();
         return OK;
     };
