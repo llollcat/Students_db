@@ -6,14 +6,11 @@ find_package(Git REQUIRED)
 if (NOT EXISTS "${CMAKE_SOURCE_DIR}/cryptopp")
     execute_process(
             COMMAND "${GIT_EXECUTABLE}" clone https://github.com/weidai11/cryptopp.git
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-    )
-    execute_process(COMMAND wget -O CMakeLists.txt https://raw.githubusercontent.com/noloader/cryptopp-cmake/master/CMakeLists.txt
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/cryptopp"
-            )
-    execute_process(COMMAND wget -O cryptopp-config.cmake https://raw.githubusercontent.com/noloader/cryptopp-cmake/master/cryptopp-config.cmake
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/cryptopp"
-            )
+            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+    file(DOWNLOAD https://raw.githubusercontent.com/noloader/cryptopp-cmake/master/CMakeLists.txt ${CMAKE_SOURCE_DIR}/cryptopp/CMakeLists.txt)
+    file(DOWNLOAD https://raw.githubusercontent.com/noloader/cryptopp-cmake/master/cryptopp-config.cmake ${CMAKE_SOURCE_DIR}/cryptopp/cryptopp-config.cmake)
+
 endif ()
 
 add_subdirectory(cryptopp)
