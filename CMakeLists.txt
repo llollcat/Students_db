@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(cryptopp)
 
 
 set(CMAKE_CXX_STANDARD 17)
-add_executable(students_db main.cpp Data/Student.h Data/StudentsContainer.h Data/Human.h ERROR_CODES.h Data/Date.h Savable.h Data/SessionsContainer.h Data/MainStudentContainer.h encrypt.h decrypt.h)
+add_executable(students_db main.cpp Data/Student.h Data/StudentsContainer.h Data/Human.h ERROR_CODES.h Data/Date.h Savable.h Data/SessionsContainer.h Data/MainStudentContainer.h encrypt.h decrypt.h generate_student.h)
 
 
 target_link_libraries(${PROJECT_NAME} cryptopp-static)

@@ -15,12 +15,14 @@ protected:
     static std::vector<Student *>
     expression_analyzer(std::string expression, const std::vector<Student *> &students_vector) {
         bool is_not = false;
+        int start, end;
         if (expression.substr(0, 1) == "!") {
             is_not = true;
-        }
-        expression = expression.substr(1, expression.size());
+            start = 1;
+        } else
+            start = 0;
 
-        int start = 0, end;
+
         auto *out = new std::vector<Student *>;
         while (expression[start] == ' ')
             ++start;
@@ -79,7 +81,8 @@ protected:
 
             }
         }
-        if ((expression.length() > 4) && (expression.substr(start, 4) == "SNum")) {
+
+        if ((expression.length()> 4) && (expression.substr(start,4) == "SNum")) {
             find_start_and_end_value(4)
             int snum;
             try {
@@ -107,12 +110,24 @@ protected:
 
 
         }
-        if ((expression.length() > 5) && (expression.substr(start, 5) == "Group")) {
+        if ((expression.
+
+                length()
+
+             > 5) && (expression.
+                substr(start,
+                       5) == "Group")) {
             find_start_and_end_value(5)
             do_iteration_and_return(item->_group == (expression.substr(start, end - start + 1)))
 
         }
-        if ((expression.length() > 7) && (expression.substr(start, 7) == "Faculty")) {
+        if ((expression.
+
+                length()
+
+             > 7) && (expression.
+                substr(start,
+                       7) == "Faculty")) {
             find_start_and_end_value(7)
             do_iteration_and_return(item->_faculty == (expression.substr(start, end - start + 1)))
         } else {
@@ -133,7 +148,7 @@ public:
     }
 
 
-    // copy constructor
+// copy constructor
     StudentsContainer(const StudentsContainer &sc) {
 
         students = sc.students;
@@ -147,6 +162,7 @@ public:
 
 
 private:
+
     static int getStudentId(const Student &student) {
         return student._id;
     }

@@ -15,6 +15,7 @@ std::string PASSWD;
 #include "Data/StudentsContainer.h"
 #include "Data/MainStudentContainer.h"
 #include "map"
+#include "generate_student.h"
 
 
 #define new_pair(str, SC) std::pair<std::string, StudentsContainer *>(str, SC)
@@ -25,20 +26,41 @@ std::string PASSWD;
 { std::cout << "Встречены запрещённые символы или пустая строка.\n"; continue;}
 
 
-int main() {
+int main(int argc, char *argv[]) {
     setlocale(LC_ALL, "Russian");
+    srand(static_cast<unsigned int>(time(0)));
+
+    std::map<std::string, StudentsContainer *> containers;
+
+    MainStudentContainer mainStudentContainer = MainStudentContainer();
+
+    bool is_need_load = true;
+    if (argc > 1) {
+        for (int i = 0; i < argc; ++i) {
+            if (strcmp(argv[i], "-generate")==0) {
+                is_need_load = false;
+                for (int i2 = 0; i2 < std::stoi(argv[i + 1]); ++i2) {
+                    mainStudentContainer.NewStudent(generate_student());
+
+                }
+                ++i;
+
+
+            }
+
+        }
+    }
+
+
     std::string path = "st";
-
-
 
 
     std::cout << "Введите пароль для шифрования." << std::endl;
     std::getline(std::cin, PASSWD);
 
-    std::map<std::string, StudentsContainer *> containers;
 
-    MainStudentContainer mainStudentContainer = MainStudentContainer();
-    mainStudentContainer.load(path);
+    if (is_need_load)
+        mainStudentContainer.load(path);
 
 
     std::cout << "help для вывода списка команд.\n";
@@ -338,7 +360,7 @@ int main() {
     }
 
 
-      mainStudentContainer.save(path);
+    mainStudentContainer.save(path);
 
 
     return 0;
