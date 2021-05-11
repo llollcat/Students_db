@@ -60,6 +60,26 @@ public:
         return OK;
     }
 
+    virtual double getAverageGrade() final {
+        double out = 0.0, counter = 0.0;
+        for (auto &item: sessions.getVectorOfSessions()) {
+
+            for (auto &item1: item) {
+                out += item1.second;
+                ++counter;
+            }
+
+
+        }
+        if (out !=0.0) {
+            return out / counter;
+        }
+        return 0;
+
+
+    }
+
+
     [[nodiscard]] virtual const std::string &getRecordBookNumber() const final {
         return this->_record_book_number;
     }
@@ -121,7 +141,8 @@ public:
                 std::to_string(day_of_birth._year) + '\n';
 
         for (const auto &item: sessions.getVectorOfSessions()) {
-            data += '_'; data+= '\n';
+            data += '_';
+            data += '\n';
             for (const auto &item1: item) {
                 data += item1.first + '\n';
                 data += std::to_string(item1.second) + '\n';
@@ -176,15 +197,15 @@ public:
         _id = std::stoi(getData());
         is_male = std::stoi(getData());
 
-       day_of_birth._day = std::stoi(getData());
+        day_of_birth._day = std::stoi(getData());
         day_of_birth._month = std::stoi(getData());
         day_of_birth._year = std::stoi(getData());
 
 
-       int counter = 0;
+        int counter = 0;
         bool is_set_second = false;
         std::string temp;
-        while (_pointer<data.size()) {
+        while (_pointer < data.size()) {
             std::string strInput;
             strInput = getData();
             if (strInput == "_") {
@@ -203,7 +224,6 @@ public:
 
 
         }
-
 
 
         in_file.close();

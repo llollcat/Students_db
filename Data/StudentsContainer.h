@@ -61,12 +61,46 @@ protected:
                 do_iteration_and_return(
                         item->day_of_birth.getStringDate() == (expression.substr(start, end - start + 1)))
 
+
+            }
+            if (expression.substr(start, 3) == "YOB") {
+                find_start_and_end_value(3)
+
+                int separator = 0;
+
+                while (expression[start + separator] != '-')
+                    ++separator;
+                try {
+                    do_iteration_and_return(
+                            ((item->day_of_birth.getYear()) >= std::stoi(expression.substr(start, separator))) &&
+                            (item->day_of_birth.getYear() <=
+                             std::stoi(expression.substr(start + separator + 1,
+                                                         end - start - separator + 1))))
+                }
+                catch (std::invalid_argument) {
+                    std::cout << "Ошибка запроса\n";
+                    return students_vector;
+                }
+
+
             }
             if (expression.substr(start, 3) == "YFE") {
                 find_start_and_end_value(3)
-                do_iteration_and_return(
-                        std::to_string(item->_year_of_entering) == (expression.substr(start, end - start + 1)))
 
+                int separator = 0;
+                while (expression[start + separator] != '-')
+                    ++separator;
+                try {
+                    do_iteration_and_return(
+                            ((item->_year_of_entering) >= std::stoi(expression.substr(start, separator))) &&
+                            (item->_year_of_entering <=
+                             std::stoi(expression.substr(start + separator + 1,
+                                                         end - start - separator + 1))))
+                }
+                catch (std::invalid_argument) {
+                    std::cout << "Ошибка запроса\n";
+                    return students_vector;
+                }
 
             }
             if (expression.substr(start, 3) == "RBN") {
@@ -82,7 +116,7 @@ protected:
             }
         }
 
-        if ((expression.length()> 4) && (expression.substr(start,4) == "SNum")) {
+        if ((expression.length() > 4) && (expression.substr(start, 4) == "SNum")) {
             find_start_and_end_value(4)
             int snum;
             try {
@@ -147,9 +181,22 @@ public:
         this->students = StudentsContainer::expression_analyzer(request, this->students);
     }
 
+    virtual void SortStudentsByGrade() {
+
+        std::sort(this->students.begin(), this->students.end(), [](Student *s1, Student *s2) {
+
+            return s1->getAverageGrade() < s2->getAverageGrade();
+
+
+        });
+
+
+    }
+
 
 // copy constructor
-    StudentsContainer(const StudentsContainer &sc) {
+    StudentsContainer(
+            const StudentsContainer &sc) {
 
         students = sc.students;
 
@@ -158,7 +205,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, StudentsContainer &studentsManager);
 
-    StudentsContainer() = default;
+    StudentsContainer() =
+    default;
 
 
 private:

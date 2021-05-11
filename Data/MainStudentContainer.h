@@ -5,9 +5,9 @@ class MainStudentContainer final : public StudentsContainer, public Savable {
 private:
     int student_counter = 0;
 private:
-    // запрет вызова поиска.
+    // запрет вызова поиска и сортировки.
     void FindStudents(const std::string &request) override {}
-
+    void SortStudentsByGrade() override {}
 
 public:
 
@@ -58,6 +58,7 @@ public:
         }
         return OK;
     }
+
 // добавление возможности вывода через std::cout<<
     friend std::ostream &operator<<(std::ostream &out, MainStudentContainer &studentsManager);
 

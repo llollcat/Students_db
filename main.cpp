@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     bool is_need_load = true;
     if (argc > 1) {
         for (int i = 0; i < argc; ++i) {
-            if (strcmp(argv[i], "-generate")==0) {
+            if (strcmp(argv[i], "-generate") == 0) {
                 is_need_load = false;
                 for (int i2 = 0; i2 < std::stoi(argv[i + 1]); ++i2) {
                     mainStudentContainer.NewStudent(generate_student());
@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
                          "  Удалить студента                 delS\n"
                          "  Отфильтровать список студентов   findS\n"
                          "  Отредактировать запись           editS\n"
+                         "  Отсортировать список             sortLbyGrade\n"
                          "  Вывести список                   print\n"
                          "  Завершить программу              quit\n";
 
@@ -314,6 +315,22 @@ int main(int argc, char *argv[]) {
             }
 
             std::cout << "Выполнено\n";
+
+
+        } else if(command == "sortLbyGrade"){
+            std::cout << "Введите название листа\n";
+            getline(std::cin, command);
+            if (containers.find(command) == containers.end()) {
+                std::cout << "Такого списка нет.\n";
+                continue;
+            }
+
+            containers.find(command)->second->SortStudentsByGrade();
+
+
+
+
+
 
 
         } else if (command == "findS") {
