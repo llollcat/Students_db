@@ -178,7 +178,13 @@ public:
     virtual void FindStudents(const std::string &request) {
 
 
-        this->students = StudentsContainer::expression_analyzer(request, this->students);
+
+        try {
+            this->students = StudentsContainer::expression_analyzer(request, this->students);
+        }
+        catch (std::exception) {
+            std::cout << "Ошибка запроса\n";
+        }
     }
 
     virtual void SortStudentsByGrade() {
