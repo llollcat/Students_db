@@ -82,39 +82,38 @@ int main(int argc, char *argv[]) {
                          "  Вывести список                   print\n"
                          "  Завершить программу              quit\n";
 
-        } else if ((command == "v51")||(command == "v77")){
+        } else if ((command == "v51") || (command == "v77")) {
             auto temp = command;
-          auto *sc1 = new StudentsContainer(mainStudentContainer) ;
-            auto *sc2 = new StudentsContainer(mainStudentContainer) ;
+            auto *sc1 = new StudentsContainer(mainStudentContainer);
+            auto *sc2 = new StudentsContainer(mainStudentContainer);
 
             get_val("Год поступления", command);
             check(command)
-            sc1->FindStudents("YFE="+command);
+            sc1->FindStudents("YFE=" + command);
             if (sc1->is_last_op_error) {
-                continue;
                 delete sc1;
                 delete sc2;
+                continue;
+
             }
-            sc2->FindStudents("!YFE="+command);
+            sc2->FindStudents("!YFE=" + command);
             if (sc2->is_last_op_error) {
-                continue;
                 delete sc1;
                 delete sc2;
+                continue;
             }
 
-            if(temp =="v77"){
+            if (temp == "v77") {
                 sc1->SortStudentsByGrade();
                 sc2->SortStudentsByGrade();
             }
-            std::cout<<"Поступили в "+ command+":\n";
-            std::cout<< *sc1;
-            std::cout<<"Поступили в другие годы:\n";
-            std::cout<< *sc2;
+            std::cout << "Поступили в " + command + ":\n";
+            std::cout << *sc1;
+            std::cout << "Поступили в другие годы:\n";
+            std::cout << *sc2;
 
             delete sc1;
             delete sc2;
-
-
 
 
         } else if (command == "newL") {
@@ -353,7 +352,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Выполнено\n";
 
 
-        } else if(command == "sortLbyGrade"){
+        } else if (command == "sortLbyGrade") {
             std::cout << "Введите название листа\n";
             getline(std::cin, command);
             if (containers.find(command) == containers.end()) {
@@ -362,11 +361,6 @@ int main(int argc, char *argv[]) {
             }
 
             containers.find(command)->second->SortStudentsByGrade();
-
-
-
-
-
 
 
         } else if (command == "findS") {
