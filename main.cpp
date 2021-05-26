@@ -70,6 +70,8 @@ int main(int argc, char *argv[]) {
 
         if (command == "help") {
             std::cout << "Использование:\n"
+                         "  Выполнить вариант 51             v51\n"
+                         "  Выполнить вариант 51             v77\n"
                          "  Новый список                     newL\n"
                          "  Удалить список                   delL\n"
                          "  Добавить студента                addS\n"
@@ -79,6 +81,41 @@ int main(int argc, char *argv[]) {
                          "  Отсортировать список             sortLbyGrade\n"
                          "  Вывести список                   print\n"
                          "  Завершить программу              quit\n";
+
+        } else if ((command == "v51")||(command == "v77")){
+            auto temp = command;
+          auto *sc1 = new StudentsContainer(mainStudentContainer) ;
+            auto *sc2 = new StudentsContainer(mainStudentContainer) ;
+
+            get_val("Год поступления", command);
+            check(command)
+            sc1->FindStudents("YFE="+command);
+            if (sc1->is_last_op_error) {
+                continue;
+                delete sc1;
+                delete sc2;
+            }
+            sc2->FindStudents("!YFE="+command);
+            if (sc2->is_last_op_error) {
+                continue;
+                delete sc1;
+                delete sc2;
+            }
+
+            if(temp =="v77"){
+                sc1->SortStudentsByGrade();
+                sc2->SortStudentsByGrade();
+            }
+            std::cout<<"Поступили в "+ command+":\n";
+            std::cout<< *sc1;
+            std::cout<<"Поступили в другие годы:\n";
+            std::cout<< *sc2;
+
+            delete sc1;
+            delete sc2;
+
+
+
 
         } else if (command == "newL") {
             std::cout << "Введите назвение списка\n";

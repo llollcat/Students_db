@@ -9,10 +9,12 @@
 class Student;
 
 class StudentsContainer {
+public:
+    bool is_last_op_error=false;
 protected:
 
 
-    static std::vector<Student *>
+     std::vector<Student *>
     expression_analyzer(std::string expression, const std::vector<Student *> &students_vector) {
         bool is_not = false;
         int start, end;
@@ -46,7 +48,7 @@ protected:
                             }                                                                           \
             \
         } \
-        return *out;}
+        is_last_op_error = false; return *out;}
 
 
         if (expression.length() > 3) {
@@ -79,6 +81,7 @@ protected:
                 }
                 catch (std::invalid_argument) {
                     std::cout << "Ошибка запроса\n";
+                    is_last_op_error = true;
                     return students_vector;
                 }
 
@@ -99,6 +102,7 @@ protected:
                 }
                 catch (std::invalid_argument) {
                     std::cout << "Ошибка запроса\n";
+                    is_last_op_error = true;
                     return students_vector;
                 }
 
@@ -166,6 +170,7 @@ protected:
             do_iteration_and_return(item->_faculty == (expression.substr(start, end - start + 1)))
         } else {
             std::cout << "Ошибка запроса\n";
+            is_last_op_error = true;
             return students_vector;
         }
     }
@@ -183,6 +188,7 @@ public:
             this->students = StudentsContainer::expression_analyzer(request, this->students);
         }
         catch (std::exception) {
+            is_last_op_error = true;
             std::cout << "Ошибка запроса\n";
         }
     }
